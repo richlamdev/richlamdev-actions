@@ -1,0 +1,67 @@
+# .gitleaks.toml - Basic configuration for Gitleaks
+# Place this file in the root of repositories that use your gitleaks-action
+
+# Use Gitleaks' built-in rules as a base
+[extend]
+useDefault = true
+
+# Additional custom rules
+[[rules]]
+description = "Generic API Key"
+id = "generic-api-key"
+regex = '''(?i)(api[_-]?key|apikey)['"\\s]*[:=]['"\\s]*[a-z0-9]{20,}'''
+tags = ["api", "key", "generic"]
+
+[[rules]]
+description = "Generic Secret"
+id = "generic-secret"
+regex = '''(?i)(secret|password|passwd|pwd)['"\\s]*[:=]['"\\s]*[a-z0-9!@#$%^&*]{8,}'''
+tags = ["secret", "password"]
+
+[[rules]]
+description = "JWT Token"
+id = "jwt-token"
+regex = '''eyJ[A-Za-z0-9_/+-]*\.eyJ[A-Za-z0-9_/+-]*\.[A-Za-z0-9_/+-]*'''
+tags = ["jwt", "token"]
+
+# Allowlist - files and patterns to ignore
+[allowlist]
+description = "ignore common false positives"
+
+# Ignore test files and mock data
+paths = [
+    '''.*_test\.go''',
+    '''.*\.test\.js''',
+    '''.*\.spec\.ts''',
+    '''.*/test/.*''',
+    '''.*/tests/.*''',
+    '''.*/mocks/.*''',
+    '''.*/fixtures/.*''',
+]
+
+# Ignore specific strings that are known false positives
+regexes = [
+    # Common placeholder values
+    '''(?i)example\.com''',
+    '''(?i)localhost''',
+    '''127\.0\.0\.1''',
+    '''password.*placeholder''',
+    '''your[_-]?api[_-]?key[_-]?here''',
+
+    # Common test values
+    '''test[_-]?secret''',
+    '''fake[_-]?key''',
+    '''dummy[_-]?password''',
+    '''mock[_-]?token''',
+]
+
+# Stop words - reduce false positives
+stopwords = [
+    "example",
+    "placeholder",
+    "dummy",
+    "fake",
+    "test",
+    "mock",
+    "sample"
+]
