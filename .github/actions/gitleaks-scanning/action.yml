@@ -10,7 +10,7 @@ inputs:
   config-path:
     description: 'Path to gitleaks config file'
     required: false
-    default: '.gitleaks.toml'
+    default: '.github/actions/gitleaks-scanning/.gitleaks.toml'
   gitleaks-flags:
     description: 'Additional gitleaks flags'
     required: false
