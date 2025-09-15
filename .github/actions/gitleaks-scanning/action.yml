@@ -27,7 +27,8 @@ runs:
       id: config-check
       shell: bash
       run: |
-        if [ -f "${{ inputs.config-path }}" ]; then
+        # if [ -f "${{ inputs.config-path }}" ]; then
+        if [ -f "$CONFIG_PATH" ]; then
           echo "found=true" >> $GITHUB_OUTPUT
           echo "Using calling repository's .gitleaks.toml"
         else
