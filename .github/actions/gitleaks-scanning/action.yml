@@ -38,9 +38,12 @@ runs:
 
     - name: Run gitleaks
       shell: bash
+      env:
+        SCAN_MODE: ${{ inputs.scan-mode }}
       run: |
         # Determine scan range
-        if [ "${{ inputs.scan-mode }}" = "latest-commit" ]; then
+        # if [ "${{ inputs.scan-mode }}" = "latest-commit" ]; then
+        if [ "$SCAN_MODE" = "latest-commit" ]; then
           LOG_OPTS="--log-opts=${{ github.sha }}^..${{ github.sha }}"
         else
           LOG_OPTS=""
