@@ -40,23 +40,34 @@ runs:
       shell: bash
       env:
         SCAN_MODE: ${{ inputs.scan-mode }}
+        SHA: ${{ github.sha }}
+        FOUND: ${{ steps.config-check.outputs.found }}
+        CONFIG_PATH: ${{ inputs.config-path }}
+        WORKSPACE: ${{ github.workspace }}
+        GITLEAKS_LICENSE_KEY: ${{ env.GITLEAKS_LICENSE_KEY }}
+        GITLEAKS_FLAGS: ${{ inputs.gitleaks-flags }}
       run: |
         # Determine scan range
         # if [ "${{ inputs.scan-mode }}" = "latest-commit" ]; then
         if [ "$SCAN_MODE" = "latest-commit" ]; then
-          LOG_OPTS="--log-opts=${{ github.sha }}^..${{ github.sha }}"
+          # LOG_OPTS="--log-opts=${{ github.sha }}^..${{ github.sha }}"
+          LOG_OPTS="--log-opts=$SHA^..$SHA"
         else
           LOG_OPTS=""
         fi
         # Set config flag if file exists
-        if [ "${{ steps.config-check.outputs.found }}" = "true" ]; then
-          CONFIG_FLAG="--config=/repo/${{ inputs.config-path }}"
+        # if [ "${{ steps.config-check.outputs.found }}" = "true" ]; then
+        if [ "$FOUND" = "true" ]; then
+          # CONFIG_FLAG="--config=/repo/${{ inputs.config-path }}"
+          CONFIG_FLAG="--config=/repo/$CONFIG_PATH"
         else
           CONFIG_FLAG=""
         fi
         docker run --rm \
-          -v "${{ github.workspace }}:/repo" \
-          -e GITLEAKS_LICENSE_KEY="${{ env.GITLEAKS_LICENSE_KEY }}" \
+          # -v "${{ github.workspace }}:/repo" \
+          -v "$WORKSPACE:/repo" \
+          # -e GITLEAKS_LICENSE_KEY="${{ env.GITLEAKS_LICENSE_KEY }}" \
+          -e GITLEAKS_LICENSE_KEY="$GITLEAKS_LICENSE_KEY" \
           zricethezav/gitleaks:v8.18.4@sha256:75bdb2b2f4db213cde0b8295f13a88d6b333091bbfbf3012a4e083d00d31caba \
           detect \
           --source="/repo" \
@@ -66,4 +77,5 @@ runs:
           --redact \
           --ignore-gitleaks-allow \
           --exit-code 1 \
-          ${{ inputs.gitleaks-flags }}
+          # ${{ inputs.gitleaks-flags }}
+          $GITLEAKS_FLAGS
