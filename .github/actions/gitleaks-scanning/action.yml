@@ -64,9 +64,7 @@ runs:
           CONFIG_FLAG=""
         fi
         docker run --rm \
-          # -v "${{ github.workspace }}:/repo" \
           -v "$WORKSPACE:/repo" \
-          # -e GITLEAKS_LICENSE_KEY="${{ env.GITLEAKS_LICENSE_KEY }}" \
           -e GITLEAKS_LICENSE_KEY="$GITLEAKS_LICENSE_KEY" \
           zricethezav/gitleaks:v8.18.4@sha256:75bdb2b2f4db213cde0b8295f13a88d6b333091bbfbf3012a4e083d00d31caba \
           detect \
@@ -77,5 +75,4 @@ runs:
           --redact \
           --ignore-gitleaks-allow \
           --exit-code 1 \
-          # ${{ inputs.gitleaks-flags }}
           $GITLEAKS_FLAGS
