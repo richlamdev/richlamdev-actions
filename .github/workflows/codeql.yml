@@ -42,6 +42,7 @@ jobs:
             - "**/*.md"
             - "**/*.txt"
             - "**/*.json"
+            - "**/*.log"
           queries:
             - uses: security-and-quality
 
