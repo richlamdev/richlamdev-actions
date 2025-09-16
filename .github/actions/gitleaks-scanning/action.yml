@@ -53,10 +53,12 @@ runs:
           LOG_OPTS=""
         fi
         # Set config flag if file exists
-        if [ "$FOUND" = "true" ]; then
+        if [ "$FOUND" = "true" ]; && [ -s "/repo/$CONFIG_PATH" ]; then
           CONFIG_FLAG="--config=/repo/$CONFIG_PATH"
+          echo "Using config: /repo/$CONFIG_PATH"
         else
           CONFIG_FLAG=""
+          echo "No .gitleaks.toml found - using Gitleaks default"
         fi
         docker run --rm \
           -v "$WORKSPACE:/repo" \
