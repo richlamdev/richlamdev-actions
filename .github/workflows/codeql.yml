@@ -20,9 +20,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript' ]
-        # CodeQL supports: cpp, csharp, go, java, javascript, python, ruby, swift
-        # Use 'javascript' for GitHub Actions YAML files and shell scripts
+        include:
+          - language: actions
+            build-mode: none
 
     steps:
     - name: Checkout repository
@@ -32,7 +32,7 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
-        # Override automatic language detection
+        build-mode: ${{ matrix.build-mode }}
         config: |
           name: "CodeQL Config"
           paths:
@@ -44,8 +44,6 @@ jobs:
             - "**/*.json"
           queries:
             - uses: security-and-quality
-        # You can also specify custom queries:
-        # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
