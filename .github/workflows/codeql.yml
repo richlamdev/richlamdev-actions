@@ -36,11 +36,12 @@ jobs:
         config: |
           name: "CodeQL Config"
           paths:
-            - .github/workflows
-            - .github/actions
+            - .github/workflows/**
+            - .github/actions/**
           paths-ignore:
             - "**/*.md"
             - "**/*.txt"
+            - "**/*.json"
           queries:
             - uses: security-and-quality
         # You can also specify custom queries:
