@@ -25,6 +25,8 @@ runs:
     - name: Check for config file
       id: config-check
       shell: bash
+      env:
+        CONFIG_PATH: ${{ inputs.config-path }}
       run: |
         if [ -f "$CONFIG_PATH" ]; then
           echo "found=true" >> $GITHUB_OUTPUT
@@ -40,7 +42,6 @@ runs:
         SCAN_MODE: ${{ inputs.scan-mode }}
         SHA: ${{ github.sha }}
         FOUND: ${{ steps.config-check.outputs.found }}
-        CONFIG_PATH: ${{ inputs.config-path }}
         WORKSPACE: ${{ github.workspace }}
         GITLEAKS_LICENSE_KEY: ${{ env.GITLEAKS_LICENSE_KEY }}
         GITLEAKS_FLAGS: ${{ inputs.gitleaks-flags }}
