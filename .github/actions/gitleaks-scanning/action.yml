@@ -1,6 +1,5 @@
 name: 'Gitleaks Secret Scanning'
 description: 'Scan repositories for secrets using Gitleaks'
-author: 'Your Organization'
 
 branding:
   icon: 'shield'
@@ -27,13 +26,12 @@ runs:
       id: config-check
       shell: bash
       run: |
-        # if [ -f "${{ inputs.config-path }}" ]; then
         if [ -f "$CONFIG_PATH" ]; then
           echo "found=true" >> $GITHUB_OUTPUT
           echo "Using calling repository's .gitleaks.toml"
         else
           echo "found=false" >> $GITHUB_OUTPUT
-          echo "No .gitleaks.toml found - using Gitleaks defaults"
+          echo "No .gitleaks.toml found - using Gitleaks default"
         fi
 
     - name: Run gitleaks
@@ -48,17 +46,13 @@ runs:
         GITLEAKS_FLAGS: ${{ inputs.gitleaks-flags }}
       run: |
         # Determine scan range
-        # if [ "${{ inputs.scan-mode }}" = "latest-commit" ]; then
         if [ "$SCAN_MODE" = "latest-commit" ]; then
-          # LOG_OPTS="--log-opts=${{ github.sha }}^..${{ github.sha }}"
           LOG_OPTS="--log-opts=$SHA^..$SHA"
         else
           LOG_OPTS=""
         fi
         # Set config flag if file exists
-        # if [ "${{ steps.config-check.outputs.found }}" = "true" ]; then
         if [ "$FOUND" = "true" ]; then
-          # CONFIG_FLAG="--config=/repo/${{ inputs.config-path }}"
           CONFIG_FLAG="--config=/repo/$CONFIG_PATH"
         else
           CONFIG_FLAG=""
