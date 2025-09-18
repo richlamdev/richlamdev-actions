@@ -16,3 +16,5 @@ repos:
     -   id: actionlint
         files: '^\.github/(workflows|actions)/.*\.(yml|yaml)$'
         types_or: [yaml, text]
+        always_run: true
+        pass_filenames: true
