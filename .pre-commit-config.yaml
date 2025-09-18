@@ -13,5 +13,5 @@ repos:
     rev: v1.6.25
     hooks:
     -   id: actionlint
-        files: '^\.github/workflows/.*\.(yml|yaml)$'
+        files: '^\.github/(workflows|actions)/.*\.(yml|yaml)$'
         types: [yaml]
