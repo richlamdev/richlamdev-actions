@@ -3,6 +3,7 @@ repos:
     rev: v2.3.0
     hooks:
     -   id: check-yaml
+        args: ['--unsafe']
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
 -   repo: https://github.com/gitleaks/gitleaks
@@ -14,4 +15,4 @@ repos:
     hooks:
     -   id: actionlint
         files: '^\.github/(workflows|actions)/.*\.(yml|yaml)$'
-        types: [yaml]
+        types_or: [yaml, text]
