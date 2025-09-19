@@ -1,27 +1,27 @@
 ---
-name: 'Gitleaks Secret Scanning'
-description: 'Scan repositories for secrets using Gitleaks'
+name: "Gitleaks Secret Scanning"
+description: "Scan repositories for secrets using Gitleaks"
 
 branding:
-  icon: 'shield'
-  color: 'red'
+  icon: "shield"
+  color: "red"
 
 inputs:
   config-path:
-    description: 'Path to gitleaks config file'
+    description: "Path to gitleaks config file"
     required: false
-    default: '.gitleaks.toml'
+    default: ".gitleaks.toml"
   gitleaks-flags:
-    description: 'Additional gitleaks flags'
+    description: "Additional gitleaks flags"
     required: false
-    default: ''
+    default: ""
   scan-mode:
-    description: 'Scan mode (latest-commit or full)'
+    description: "Scan mode (latest-commit or full)"
     required: false
-    default: 'latest-commit'
+    default: "latest-commit"
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Check for config file
       id: config-check
