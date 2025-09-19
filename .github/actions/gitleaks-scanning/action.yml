@@ -1,3 +1,4 @@
+---
 name: 'Gitleaks Secret Scanning'
 description: 'Scan repositories for secrets using Gitleaks'
 

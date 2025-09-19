@@ -1,20 +1,47 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0
     hooks:
-    -   id: check-yaml
-        args: ['--unsafe']
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
--   repo: https://github.com/gitleaks/gitleaks
+    - id: check-yaml
+      args: ['--unsafe']
+    - id: end-of-file-fixer
+    - id: trailing-whitespace
+
+  - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.1
     hooks:
-    -   id: gitleaks
--   repo: https://github.com/rhysd/actionlint
+    - id: gitleaks
+
+  - repo: https://github.com/rhysd/actionlint
     rev: v1.6.25
     hooks:
-    -   id: actionlint
-        files: '^\.github/workflows/.*\.(yml|yaml)$'
-        types_or: [yaml, text]
+    - id: actionlint
+      files: '^\.github/workflows/.*\.(yml|yaml)$'
+      types_or: [yaml, text]
           #always_run: true
           #pass_filenames: true
+
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.33.3
+    hooks:
+    - id: check-github-workflows
+      args: ["--verbose"]
+
+  # Prettier for auto-fixing YAML
+  # - repo: https://github.com/pre-commit/mirrors-prettier
+  #   rev: v4.1.2
+  #   hooks:
+  #     - id: prettier
+  #       files: \.(yml|yaml)$
+  #       args: ["--write"]
+
+  # - repo: https://github.com/adrienverge/yamllint.git
+  #   rev: v1.37.1
+  #   hooks:
+  #   - id: yamllint
+  #     arg: [--strict]
+
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.11.0
+    hooks:
+    - id: shellcheck
