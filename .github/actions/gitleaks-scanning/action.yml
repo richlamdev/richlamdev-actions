@@ -23,6 +23,14 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Validate all inputs
+      shell: bash
+      env:
+        CONFIG_PATH: ${{ inputs.config-path }}
+        SCAN_MODE: ${{ inputs.scan-mode }}
+        GITLEAKS_FLAGS: ${{ inputs.gitleaks-flags }}
+      run: ${{ github.action_path }}/validate-inputs.sh
+
     - name: Check for config file
       id: config-check
       shell: bash
