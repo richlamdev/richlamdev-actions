@@ -37,4 +37,5 @@ if [[ -n "${GITLEAKS_FLAGS:-}" ]]; then
   fi
 fi
 
+echo
 echo "✓ Input validation passed"
