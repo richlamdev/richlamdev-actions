@@ -1,0 +1,44 @@
+---
+name: Gitleaks Secret Scan (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      scan-mode:
+        description: "Scan mode (latest-commit or full)"
+        type: string
+        required: false
+        default: "latest-commit"
+      config-path:
+        description: "Path to gitleaks config file"
+        type: string
+        required: false
+        default: ".gitleaks.toml"
+      gitleaks-flags:
+        description: "Additional gitleaks flags"
+        type: string
+        required: false
+        default: ""
+    secrets:
+      GITLEAKS_LICENSE_KEY:
+        description: "Gitleaks license key (required for org accounts)"
+        required: false
+
+jobs:
+  scan:
+    name: Scan for secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout calling repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks scan
+        uses: richlamdev/richlamdev-actions/.github/actions/gitleaks-scanning@main
+        env:
+          GITLEAKS_LICENSE_KEY: ${{ secrets.GITLEAKS_LICENSE_KEY }}
+        with:
+          scan-mode: ${{ inputs.scan-mode }}
+          config-path: ${{ inputs.config-path }}
+          gitleaks-flags: ${{ inputs.gitleaks-flags }}
