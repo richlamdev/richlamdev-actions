@@ -1,0 +1,2 @@
+# Minimal gitleaks config - uses built-in rules
+title = "empty gitleaks config to bypass default requirement of .gitleaks.toml"

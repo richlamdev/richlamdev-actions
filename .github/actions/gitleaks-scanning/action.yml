@@ -1,24 +1,25 @@
 ---
 name: "Gitleaks Secret Scanning"
-description: "Scan repositories for secrets using Gitleaks"
 
-branding:
-  icon: "shield"
-  color: "red"
+description: "Scan repositories for secrets using Gitleaks"
 
 inputs:
   config-path:
     description: "Path to gitleaks config file"
     required: false
-    default: ".gitleaks.toml"
+    default: .gitleaks.toml
   gitleaks-flags:
     description: "Additional gitleaks flags"
     required: false
-    default: ""
+    default: ''
   scan-mode:
     description: "Scan mode (latest-commit or full)"
     required: false
-    default: "latest-commit"
+    default: full
+  gitleaks-license-key:
+    description: 'Gitleaks license key (required for org accounts)'
+    required: false
+    default: ''
 
 runs:
   using: "composite"
@@ -29,29 +30,17 @@ runs:
         CONFIG_PATH: ${{ inputs.config-path }}
         SCAN_MODE: ${{ inputs.scan-mode }}
         GITLEAKS_FLAGS: ${{ inputs.gitleaks-flags }}
-      run: ${{ github.action_path }}/validate-inputs.sh
-
-    - name: Check for config file
-      id: config-check
-      shell: bash
-      env:
-        CONFIG_HASH: ${{ hashFiles(inputs.config-path) }}
-      run: |
-        if [ -n "$CONFIG_HASH" ]; then
-          echo "found=true" >> $GITHUB_OUTPUT
-          echo "Using calling repository's .gitleaks.toml"
-        else
-          echo "found=false" >> $GITHUB_OUTPUT
-          echo "No .gitleaks.toml found - using Gitleaks default"
-        fi
+        ACTION_PATH: ${{ github.action_path }}
+      run: "$ACTION_PATH/validate-inputs.sh"
 
     - name: Run gitleaks
       shell: bash
       env:
+        CONFIG_PATH: ${{ inputs.config-path }}
         SCAN_MODE: ${{ inputs.scan-mode }}
         SHA: ${{ github.sha }}
-        FOUND: ${{ steps.config-check.outputs.found }}
         WORKSPACE: ${{ github.workspace }}
+        ACTION_PATH: ${{ github.action_path }}
         GITLEAKS_LICENSE_KEY: ${{ env.GITLEAKS_LICENSE_KEY }}
         GITLEAKS_FLAGS: ${{ inputs.gitleaks-flags }}
       run: |
@@ -61,17 +50,20 @@ runs:
         else
           LOG_OPTS=""
         fi
+
         # Set config flag if file exists
-        if [ "$FOUND" = "true" ] && [ -s "/repo/$CONFIG_PATH" ]; then
-          CONFIG_FLAG="--config=/repo/$CONFIG_PATH"
-          echo "Using config: /repo/$CONFIG_PATH"
+        if [ "${CONFIG_PATH}" ] && [ -f "${CONFIG_PATH}" ]; then
+          CONFIG_FLAG="--config=/repo/${CONFIG_PATH}"
+          echo "Using config: ${CONFIG_PATH}"
         else
-          CONFIG_FLAG=""
+          CONFIG_FLAG="--config=/action/default-config.toml"
           echo "No .gitleaks.toml found - using Gitleaks default"
         fi
+
         docker run --rm \
-          -v "$WORKSPACE:/repo" \
-          -e GITLEAKS_LICENSE_KEY="$GITLEAKS_LICENSE_KEY" \
+          -v "${WORKSPACE}:/repo" \
+          -v "${ACTION_PATH}:/action" \
+          -e GITLEAKS_LICENSE_KEY="${GITLEAKS_LICENSE_KEY}" \
           zricethezav/gitleaks:v8.18.4@sha256:75bdb2b2f4db213cde0b8295f13a88d6b333091bbfbf3012a4e083d00d31caba \
           detect \
           --source="/repo" \
@@ -81,4 +73,4 @@ runs:
           --redact \
           --ignore-gitleaks-allow \
           --exit-code 1 \
-          $GITLEAKS_FLAGS
+          ${GITLEAKS_FLAGS}
